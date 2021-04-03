@@ -94,8 +94,7 @@ dim(Auto)
 names(Auto)
 plot(Auto$cylinders, Auto$mpg) # $ объеденяем знаком набор переменных, потому что Р не умеет
 
-detach(Auto)
-# делает тоже, что и$, обратная функция  detch()
+detach(Auto)# делает тоже, что и$, обратная функция  detch()
 attach(Auto)
 plot(cylinders, mpg)
 cylinders = as.factor(cylinders) # конвертирует колличевственные перемернные в качевственные
@@ -206,11 +205,131 @@ summary(Auto)
 # количественные: миль на галлон, цилиндры, рабочий объем, лошадиные силы, вес,
 # ускорение, год
 # качественный: название, происхождение(origin)
-# сапли это Р функция иттерации, намного быстрее фор и подобных (в ~100 раз)
+# сапли это Р функция иттерации, НАМНОГО БЫСТРЕЕ !!! фор и подобных (в ~100 раз)
 sapply(Auto[, 1:7], range)
-#учимя пользоваться sаппли
-#case 1 matriz and input argument
+#-----------------saply() func --------------------
+#case 1 matrix and input argument
 m1 <- matrix(1:9, nrow = 3)
 m1
 result <- apply(m1,1, mean) # func(X, MARGIN, FUN, ..) маржин =1 строки, маржин =2  столбы
 result
+class(result)#выводит класс объекта
+#сумма по столбцам
+result <- apply(m1, 2, sum)
+result
+class(result)
+result <- apply(m1 ,1 , cumsum)# совокупная сумма элементов для каждой строки
+result
+class(result)
+matrix(apply(m1, 1, cumsum), nrow = 3, byrow =T)
+
+# функции в Р
+check <-function(x){
+  return(x[x>5])
+}
+result <- apply(m1, 1, check)
+result
+class(result)
+# case 2 data frame as an input
+#учимся создавать матрицы значений и переменных !!! ВАЖНО!!! + ренжу усвоить попозже на этой функции
+ratings <- c(4.2, 4.4, 3.4, 3.9, 5, 4.1, 3.2 ,3.9, 4.6, 4.8, 5, 4, 4.5, 3.9, 4.7, 3.6)
+#ratings add line б
+employee.mat <- matrix(ratings, byrow = TRUE, nrow = 4, dimnames = list(c("Quarter1", "Quarter2", "Quarter3",  "Quarter4" ), c("Hari", "Shri", "John", "Albert")))
+employee <- as.data.frame(employee.mat)
+employee
+result <- apply(employee, 2, sum)
+result
+class(result)
+result <- apply(employee, 1, cumsum)
+result
+cumsum(1:10) # сумма диапазона тоже что и итерационная сумма чисел
+cumprod(1:10) # факториал
+check<-function(x){# создаем функциюю проверки
+  return(x[x>4.2])
+}
+result <- apply(employee, 2, check)
+result
+#-----------------laply() func------------------
+#case 1. vector as an input argument
+ratings
+# выводит лист
+result <- lapply(ratings, mean)
+result
+#case 2
+list1 <- list(maths=c(64, 45, 89, 67), english=c(79, 84, 62, 80), physics=c(68, 72, 69, 80), chemistry = c(99, 91,84, 89))
+list1
+result <- lapply(list1, mean)
+result
+class(result)
+check<-function(x){
+  return(x[x>75])
+}
+result <- lapply(list1, check)
+result
+class(result)
+#case 3 dataframe as an input argument
+result <- lapply(employee, sum)
+result
+result <- lapply(employee, cumsum) #накопителья сумма, а, а+б, а+б+с
+result
+check <- function(x){
+  return(x[x>4.2])
+}
+result <- lapply(employee, check )
+result
+#----------------tapply() func --------------
+salary <- c(21000, 29000, 32000, 34000, 45000)
+desig <- c("Programmer", "Senior Programmer", "Senior Programmer", "Senior Programmer", "Manager")
+gender <- c("M", "F", "F", "M", "M")
+result <- tapply(salary, desig, mean)
+result
+class(result)
+result <- tapply(salary, list(desig, gender), mean)
+result
+class(result)
+#-------------- by() func --------------
+result <- by(salary, desig, mean)
+result
+class(result)
+result[2]
+as.list(result)#Функции для создания, приведения и проверки обоих типов списков R
+result <- by(salary, list(desig, gender), mean)
+result
+class(result)
+#-------------maply() func -------------- m значит многомерный
+result <- mapply(rep, 1:4, 4:1, 6:9)
+result
+class(result)
+result <- mapply(rep, 1:4, 4:4)
+result
+class(result)
+fix(college)
+library(MASS)
+'''
+
+'''
+Boston
+fix(Boston)
+plot(Boston$chas,Boston$age)
+hist(Boston$chas)
+hist(Boston$age)
+hist(Boston$black)
+hist(Boston$indus)
+hist(Boston$crim)
+hist(Boston$tax, 20)
+# (d)
+par(mfrow=c(1,3))
+hist(Boston$crim[Boston$crim>1], breaks=25)
+plot(Boston, Boston$crim)
+plot(Boston$ptratio, Boston$tax)
+plot(Boston, Boston$chas)
+# (e) #subset возвращает вектор
+dim(subset(Boston, chas ==1))
+#f
+median(Boston$ptratio)
+hist(Boston$medv)
+#самое низкое медиальное значение занятых домой
+t(subset(Boston, medv == min(Boston$medv)))
+hist(Boston$rm, 20)
+dim(subset(Boston, rm>7))
+dim(subset(Boston, rm>8))
